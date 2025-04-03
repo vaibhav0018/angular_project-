@@ -1,25 +1,20 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
-import { PLATFORM_ID } from '@angular/core';
 
 export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
-  const platformId = inject(PLATFORM_ID);
 
-  const isBrowser = isPlatformBrowser(platformId);
+  if (typeof window !== 'undefined') {
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn') === 'true';
 
-  if (!isBrowser) {
-    // During SSR: don't block — let client-side Angular decide after hydration
+    if (!isLoggedIn) {
+      router.navigate(['/login']);
+      return false;
+    }
+
     return true;
   }
 
-  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-
-  if (!isLoggedIn) {
-    router.navigate(['/login']);
-    return false;
-  }
-
-  return true;
+  // SSR fallback: block access on server
+  return false;
 };

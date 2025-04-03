@@ -4,17 +4,18 @@ import { AppComponent } from './app.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { HeroDetailComponent } from './components/hero-detail/hero-detail.component';
 import { LoginComponent } from './components/login-component/login-component.component';
-import { authGuard } from './auth.guard'; // ✅ adjust path if needed
-
+import { authGuard } from './auth.guard';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'login', pathMatch: 'full' },
     { path: 'login', component: LoginComponent },
-    { path: 'dashboard', component: DashboardComponent },  // 🚫 removed guard
-    { path: 'heroes', component: HeroesComponent },        // 🚫 removed guard
-    { path: 'detail/:id', component: HeroDetailComponent }
-
+    { path: '', redirectTo: 'login', pathMatch: 'full' },
+    { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
+    { path: 'heroes', component: HeroesComponent, canActivate: [authGuard] },
+    { path: 'detail/:id', component: HeroDetailComponent, canActivate: [authGuard] }
 ];
 
+
+    // { path: '', redirectTo: 'login', pathMatch: 'full' },
+    // { path: 'login', component: LoginComponent },
 
 

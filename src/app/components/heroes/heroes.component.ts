@@ -12,7 +12,7 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   templateUrl: './heroes.component.html',
   styleUrls: ['./heroes.component.scss'],
-  imports: [CommonModule, FormsModule, NgFor, HeroDetailComponent, RouterModule]
+  imports: [CommonModule, FormsModule, NgFor, RouterModule]
 })
 export class HeroesComponent implements OnInit {
   heroes: Hero[] = [];
@@ -39,4 +39,42 @@ export class HeroesComponent implements OnInit {
         this.heroes = x;
       });
   }
+
+  deleteHero(id: number): void {
+    this.heroService.deleteHero(id).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.heroes = this.heroes.filter(h => h.id !== id);
+          alert('Hero deleted successfully!');
+        } else {
+          alert('Hero not found!');
+        }
+      },
+      error: () => alert('Error deleting hero')
+    });
+  }
+
+  newHero: Hero = { id: 0, name: '' };
+
+addHero(): void {
+  if (!this.newHero.name.trim() || !this.newHero.id) return;
+
+  this.heroService.addHero(this.newHero).subscribe({
+    next: (res) => {
+      if (res.success) {
+        this.heroes.push({ ...this.newHero });
+        this.newHero = { id: 0, name: '' };
+        this.messageService.add('New hero added successfully!');
+      } else {
+        alert('Failed to add hero.');
+      }
+    },
+    error: (err) => {
+      console.error(err);
+      alert('Error adding hero');
+    }
+  });
+}
+
+  
 }

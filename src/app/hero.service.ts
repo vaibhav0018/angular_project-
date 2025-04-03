@@ -34,5 +34,12 @@ export class HeroService {
     return this.http.post<Hero>('http://localhost:5000/update', hero);
   }
 
+  deleteHero(id: number): Observable<any> {
+    return this.http.post('http://localhost:5000/delete', { id });
+  }
 
+  addHero(hero: Hero): Observable<{ success: boolean }> {
+    return this.http.post<{ success: boolean }>('http://localhost:5000/add', hero);
+  }  
+  
   }
